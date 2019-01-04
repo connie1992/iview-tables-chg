@@ -1,8 +1,8 @@
 {
   "name": "iview-tables-chg",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A iview table with pager",
-  "main": "index.js",
+  "main": "lib/iview-tables-chg.js",
   "scripts": {
     "dev": "set NODE_ENV=development&&webpack-dev-server --content-base ./  --config build/webpack.dev.config.js ",
     "build": "set NODE_ENV=production&&webpack --progress --hide-modules --config build/webpack.prod.config.js"
@@ -13,7 +13,6 @@
   ],
   "author": "chenhuogu",
   "license": "ISC",
-  "main": "lib/iview-tables-chg.js",
   "files": [
     "lib",
     "src"
