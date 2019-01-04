@@ -60,6 +60,7 @@
 
 <script>
   import util from '@/libs/util';
+  import '../assets/iconfont/iconfont.css';
   export default {
     name: 'ChgTables',
     props: {
