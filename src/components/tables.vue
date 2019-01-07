@@ -1,6 +1,6 @@
 <style>
     .ivu-table .table-selected-row td{
-        background-color: #d5e3f1;
+        background-color: #e0eefd;
     }
     .ivu-table-small .ivu-table-row td {
         height: 35px
@@ -43,7 +43,7 @@
                 <slot name="loading" slot="loading"></slot>
             </Table>
             <!-- 分页 -->
-            <div style="padding: 8px;border-bottom: 1px solid #d6d2d2;border-left: 1px solid #d6d2d2;border-right: 1px solid #d6d2d2;" ref="pagerDiv">
+            <div v-if="showPage" style="padding: 8px;border-bottom: 1px solid #d6d2d2;border-left: 1px solid #d6d2d2;border-right: 1px solid #d6d2d2;" ref="pagerDiv">
                 <Row>
                     <Col span="18">
                         <Page show-sizer :page-size-opts="pagerPageSizeOpts" size="small"
@@ -85,6 +85,10 @@
         default: false
       },
       showElevator: {
+        type: Boolean,
+        default: true
+      },
+      showPage: {
         type: Boolean,
         default: true
       },
