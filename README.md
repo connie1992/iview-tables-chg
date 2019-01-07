@@ -3,11 +3,11 @@
 >结合了iView的 tables 和 page组件，实现类似easyUI的表格效果，只需要设置column、data和total即可以展示
 >带分页的表格，毕竟当数据量比较多的时候还是需要分页
 
-## Example
+## 示例
 
 ![Example](./src/example/example.png)
 
-## Installation
+## 安装
 
 Use npm:
 
@@ -16,7 +16,7 @@ npm i iview-tables-chg
 ```
 
 
-## Usage
+## 使用
 
 全局引入
 ```javascript
@@ -71,3 +71,10 @@ row-class-name不建议再另外设置了，不然会影响封装实现的一些
 | search | 根据筛选条件刷新表格数据，页码重置为第一页，一般用于搜索 | - | - |
 | getSelects | 获取选中的行数据 | - | Array |
 
+## 扩展
+>如果有其他小伙伴们需要扩展现有的功能，可以download源代码：
+https://github.com/connie1992/iview-tables-chg
+npm run dev：开发环境
+npm run build：编译源文件，npm上传需要在每次修改源码之后需要build一下，这样别人在通过npm安装使用时修改才能生效；
+
+>npm ：https://www.npmjs.com/package/iview-tables-chg
