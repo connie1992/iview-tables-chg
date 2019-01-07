@@ -1,6 +1,6 @@
 {
   "name": "iview-tables-chg",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A iview table with pager",
   "main": "lib/iview-tables-chg.js",
   "scripts": {
