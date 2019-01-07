@@ -2,7 +2,7 @@
     <div id="example" style="margin: 50px;width: 1000px">
         <div style="padding: 10px">使用查询：<Button type="primary" @click="search" size="small">查询</Button></div>
         <ChgTables ref="demoTable" show-index show-selection :loading="loading" :columns="column" :total="total"
-                :prop-data="data" height="500px" size-text-font-size="12px"
+                :prop-data="data" height="400px" size-text-font-size="12px"
                 :pager-page-size="20" :pager-page-size-opts="[10, 20, 30]" @load-data="getData"></ChgTables>
     </div>
 </template>

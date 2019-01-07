@@ -3,6 +3,10 @@
 >结合了iView的 tables 和 page组件，实现类似easyUI的表格效果，只需要设置column、data和total即可以展示
 >带分页的表格，毕竟当数据量比较多的时候还是需要分页
 
+## Example
+
+![Example](./src/example/example.png)
+
 ## Installation
 
 Use npm:
