@@ -1,19 +1,23 @@
 <style>
-    .ivu-table .table-selected-row td{
-        background-color: #e0eefd;
+    .ivu-table .table-selected-row td {
+        background-color: #e0eefd
     }
+
     .ivu-table-small .ivu-table-row td {
-        height: 35px
+        height: 32px
     }
 
     #refreshBtn .ivu-icon {
         line-height: 1.0;
     }
+
+    .ivu-page.mini .ivu-page-options-elevator input {
+        height: 22px;
+    }
 </style>
 <template>
-    <div>
-        <div id="tableID">
-            <Table
+    <div id="tableID">
+        <Table
                 :data="tableData"
                 :columns="columns"
                 :stripe="stripe"
@@ -21,6 +25,7 @@
                 :show-header="showHeader"
                 :width="width"
                 :height="height"
+                :max-height="maxHeight"
                 :loading="loading"
                 :disabled-hover="disabledHover"
                 :highlight-row="highlightRow"
@@ -38,29 +43,35 @@
                 @on-row-click="onRowClick"
                 @on-row-dblclick="onRowDblclick"
                 @on-expand="onExpand">
-                <slot name="header" slot="header"></slot>
-                <slot name="footer" slot="footer"></slot>
-                <slot name="loading" slot="loading"></slot>
-            </Table>
-            <!-- 分页 -->
-            <div v-if="showPage" style="padding: 8px;border-bottom: 1px solid #d6d2d2;border-left: 1px solid #d6d2d2;border-right: 1px solid #d6d2d2;" ref="pagerDiv">
-                <Row>
-                    <Col span="18">
-                        <Page show-sizer :page-size-opts="pagerPageSizeOpts" size="small"
-                              :total="total" :current="current" :page-size="pageSize"
-                              @on-change="changePage" @on-page-size-change="changePageSize" style="float: left;" :show-elevator="showElevator"/>
-                        <span id="refreshBtn" style="display: inline-block;float: left;margin-left: 20px"><Button icon=" iconfont icon-shuaxin1" size="small" @click="refresh"></Button></span>
-                    </Col>
-                    <Col span="6" style="text-align: right"><label :style="{fontSize: sizeTextFontSize}">{{sizeText}}</label></Col>
-                </Row>
+            <slot name="header" slot="header"></slot>
+            <slot name="footer" slot="footer"></slot>
+            <slot name="loading" slot="loading"></slot>
+            <template v-for="item in columns" :v-if="item.slot != undefined && item.key == undefined" slot-scope="{row, index}" :slot="item.slot">
+                <slot :name="item.slot" :data="{row, index}"></slot>
+            </template>
+        </Table>
+        <div v-if="showPage" style="padding-top: 8px;display: flex;justify-content: flex-end" ref="pagerDiv">
+            <Page show-sizer :show-elevator="showElevator" :page-size-opts="pagerPageSizeOpts" size="small"
+                  :total="total" :current="current" :page-size="pageSize"
+                  @on-change="changePage" @on-page-size-change="changePageSize"/>
+            <div id="refreshBtn" style="margin-right: 8px">
+                <Button customIcon="iconfont icon-shuaxin1"
+                        size="small"
+                        @click="refresh"></Button>
             </div>
+            <div :style="{fontSize: sizeTextFontSize,display: 'flex', alignItems: 'center'}">{{sizeText}}</div>
+        </div>
+        <div v-if="!showPage && showTotalDesc" style="padding-top: 18px; text-align: right" ref="pagerDiv">
+            <label :style="{fontSize: sizeTextFontSize}">共{{tableData.length}}条数据</label>
         </div>
     </div>
 </template>
 
+
 <script>
   import util from '@/libs/util';
   import '../assets/iconfont/iconfont.css';
+
   export default {
     name: 'ChgTables',
     props: {
@@ -84,13 +95,13 @@
         type: Boolean,
         default: false
       },
-      showElevator: {
-        type: Boolean,
-        default: true
-      },
       showPage: {
         type: Boolean,
         default: true
+      },
+      showTotalDesc: {
+        type: Boolean,
+        default: false
       },
       size: {
         type: String,
@@ -101,6 +112,9 @@
         default: 'auto'
       },
       height: {
+        type: [Number, String]
+      },
+      maxHeight: {
         type: [Number, String]
       },
       stripe: {
@@ -156,6 +170,18 @@
       indexWidth: {
         type: Number,
         default: 60
+      },
+      refreshByChangeBook: {
+        type: Boolean,
+        default: false
+      },
+      showElevator: {
+        type: Boolean,
+        default: false
+      },
+      refreshByRouteChange: {
+        type: Boolean,
+        default: false
       }
     },
     /**
@@ -176,10 +202,11 @@
       };
     },
     computed: {
-      sizeText: function() {
+      sizeText: function () {
         let end = this.current * this.pageSize;
         end = end > this.total ? this.total : end;
-        return `当前${(this.current - 1) * this.pageSize + 1}~${end}，共${this.total}条`;
+        let start = end == 0 ? 0 : (this.current - 1) * this.pageSize + 1;
+        return `当前${start}~${end}，共${this.total}条`;
       },
     },
     watch: {
@@ -193,9 +220,6 @@
       }
     },
     methods: {
-      test() {
-          console.log('test……');
-      },
       rowClassName(row) {
         if (this.showSelection) {
           if (row._checked) {
@@ -221,17 +245,15 @@
       // 点击多选框时触发事件
       onSelectionChange(selection) {
         this.selects = selection;
-        if (this.showSelection) {
-          this.tableData.forEach((item) => {
-            // 根据选中的数据来设置整个表格每行数据的_checked属性
-            let temp = selection.filter(item1 => item1.id == item.id);
-            if (temp && temp.length > 0) {
-              item._checked = true;
-            } else {
-              item._checked = false;
-            }
-          });
-        }
+        this.tableData.forEach((item) => {
+          // 根据选中的数据来设置整个表格每行数据的_checked属性
+          let temp = selection.filter(item1 => item1.id == item.id);
+          if (temp && temp.length > 0) {
+            item._checked = true;
+          } else {
+            item._checked = false;
+          }
+        });
         this.$emit('on-selection-change', selection);
       },
       onSortChange(column) {
@@ -288,7 +310,10 @@
         this.refresh();
       },
       getParams() {
-        let params = {pageSize: this.pageSize, pageIndex: this.current - 1, sortKey: this.sortKey, sortType: this.sortType};
+        let params = {
+          pageSize: this.pageSize, pageIndex: this.current - 1, sortKey: this.sortKey, sortType: this.sortType,
+          pageStart: this.pageSize * (this.current - 1), pageEnd: this.current * this.pageSize
+        };
         return params;
       },
       search() {
@@ -304,8 +329,8 @@
     },
     created() {
       this.pageSize = this.pagerPageSize;
-      if (this.showIndex) {
-        this.columns.unshift({
+      if (this.showIndex && (this.columns.length == 0 || (this.columns.length > 0 && (this.columns[0].type != 'index' || (this.columns[1] && this.columns[1].type != 'index'))))) {
+        let indexParam = {
           type: 'index',
           width: this.indexWidth,
           align: 'center',
@@ -316,7 +341,15 @@
           renderHeader: (h) => {
             return h('span', '序号');
           }
-        });
+        };
+        // 判断有没有左边固定列的情况
+        for (let i = 0; i < this.columns.length; i++) {
+          if (this.columns[i].fixed === 'left') {
+            indexParam.fixed = 'left';
+            break;
+          }
+        }
+        this.columns.unshift(indexParam);
       }
       if (this.showSelection) {
         this.columns.unshift({
@@ -325,6 +358,7 @@
       }
     },
     mounted() {
+
     }
   };
 </script>

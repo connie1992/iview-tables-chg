@@ -40,7 +40,8 @@ module.exports = {
         }
         ],
         include: [
-          resolve('src')
+          resolve('src'),
+          resolve('node_modules/iview/src')
         ]
       },
       {
