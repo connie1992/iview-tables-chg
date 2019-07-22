@@ -171,15 +171,7 @@
         type: Number,
         default: 60
       },
-      refreshByChangeBook: {
-        type: Boolean,
-        default: false
-      },
       showElevator: {
-        type: Boolean,
-        default: false
-      },
-      refreshByRouteChange: {
         type: Boolean,
         default: false
       }

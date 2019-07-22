@@ -71,6 +71,27 @@ row-class-name不建议再另外设置了，不然会影响封装实现的一些
 | search | 根据筛选条件刷新表格数据，页码重置为第一页，一般用于搜索 | - | - |
 | getSelects | 获取选中的行数据 | - | Array |
 
+### 使用slot自定义列
+```html
+<ChgTables ref="demoTable" show-selection show-index :loading="loading" :columns="column" :total="total"
+                   :prop-data="data" max-height="500px" sizeTextFontSize="12px"
+                   :pagerPageSize="20" :pagerPageSizeOpts="[10, 20, 30]" @load-data="getData">
+            <template slot-scope="{data}"  slot="action">
+                <Button type="primary" size="small" style="margin-right: 5px" @click="show(data.index)">View</Button>
+                <Button type="error" size="small" @click="remove(data.index)">Delete</Button>
+            </template>
+        </ChgTables>
+```
+列配置:
+```javascript
+// slot的值为模板里的slot值
+{
+   title: '操作',
+   align: 'center',
+   slot: 'action'
+},
+```
+
 ## 扩展
 >如果有其他小伙伴们需要扩展现有的功能，可以download源代码：
 https://github.com/connie1992/iview-tables-chg
